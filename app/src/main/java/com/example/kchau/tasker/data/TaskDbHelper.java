@@ -7,17 +7,15 @@ import com.example.kchau.tasker.data.TaskContract.TaskEntry;
 
 public class TaskDbHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "Tasks.db";
-
-    public static final String COMMA = ", ";
+    public static final String DATABASE_NAME = "tasks.db";
 
     public static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE " + TaskEntry.TABLE_NAME + " ("
-                    + TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + COMMA
-                    + TaskEntry.COLUMN_TASK_NAME + " TEXT NOT NULL" + COMMA
-                    + TaskEntry.COLUMN_TASK_START + " TEXT NOT NULL" + COMMA
-                    + TaskEntry.COLUMN_TASK_END + " TEXT NOT NULL" + COMMA
-                    + TaskEntry.COLUMN_TASK_DONE + "INTEGER NOT NULL DEFAULT 0" + ");" ;
+            "CREATE TABLE " + TaskEntry.TABLE_NAME + " ( "
+                    + TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + TaskEntry.COLUMN_TASK_NAME + " TEXT NOT NULL, "
+                    + TaskEntry.COLUMN_TASK_START_TIME + " TEXT NOT NULL, "
+                    + TaskEntry.COLUMN_TASK_END_TIME + " TEXT, "
+                    + TaskEntry.COLUMN_TASK_IS_DONE + " INTEGER NOT NULL DEFAULT 0 );" ;
 
     public TaskDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

@@ -13,6 +13,8 @@ import com.example.kchau.tasker.data.TaskContract.TaskEntry;
 
 public class TaskProvider extends ContentProvider {
 
+    // TODO: sanity checks
+
     /** Tag for the log messages */
     public static final String LOG_TAG = TaskProvider.class.getSimpleName();
     private TaskDbHelper mTaskDbHelper;
@@ -42,6 +44,7 @@ public class TaskProvider extends ContentProvider {
         SQLiteDatabase database = mTaskDbHelper.getReadableDatabase();
 
         int uriCode = sUriMatcher.match(uri);
+
         //Return obj
         Cursor cursor;
 
@@ -59,6 +62,9 @@ public class TaskProvider extends ContentProvider {
 
         }
 
+        // TODO: get reloading to work (after the task is added)
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
         return cursor;
     }
 
@@ -71,11 +77,16 @@ public class TaskProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
-        return null;
-    }
+        // TODO: in editor activity- set done time to 5 min after if not specified, autoset done to false
 
-    private void insertTask(){
+        SQLiteDatabase database = mTaskDbHelper.getWritableDatabase();
+        long newId = database.insert(TaskEntry.TABLE_NAME, null, contentValues);
+        Uri insertedUri = ContentUris.withAppendedId(TaskEntry.CONTENT_URI, newId);
 
+        // Notify that this Uri has updated
+        getContext().getContentResolver().notifyChange(insertedUri, null);
+
+        return insertedUri;
     }
 
     @Override
