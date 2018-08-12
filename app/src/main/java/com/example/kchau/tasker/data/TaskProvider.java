@@ -90,8 +90,35 @@ public class TaskProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+    public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        SQLiteDatabase database = mTaskDbHelper.getWritableDatabase();
+
+        int uriCode = sUriMatcher.match(uri);
+        int rowsDeleted;
+
+        switch (uriCode) {
+            case TASKS:
+                // Delete the whole thing
+                rowsDeleted = database.delete(TaskEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+
+            case TASK_ID:
+                // set the delete to only delete the number on the URI
+                selection = TaskEntry._ID + "=?";
+                selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri)) };
+                rowsDeleted = database.delete(TaskEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+
+            default:
+                throw new IllegalArgumentException("cannot delete from this URI: " + uri);
+        }
+
+        if (rowsDeleted != 0) {
+            // Notify of change of this particular URI
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return rowsDeleted;
     }
 
     @Override

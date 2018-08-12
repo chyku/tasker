@@ -1,6 +1,9 @@
 package com.example.kchau.tasker;
 
+import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -10,13 +13,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.kchau.tasker.data.TaskContract.TaskEntry;
 
-public class ListActivity extends AppCompatActivity {
+public class ListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    private TextView mDisplay;
+    private ListView mList;
+    private TaskAdapter taskAdapter;
+
+    private final int TASK_LOADER_ID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,51 +41,19 @@ public class ListActivity extends AppCompatActivity {
             }
         });
 
-        mDisplay = (TextView) findViewById(R.id.list_textview);
+        mList = (ListView) findViewById(R.id.listview_task);
+        taskAdapter = new TaskAdapter(this, null);
+        mList.setAdapter(taskAdapter);
 
-        displayTasks();
-
-    }
-
-    // Temporary function that displays database contents in a TextView
-    // TODO: implement Loaders to take accessing the database off the main thread
-    // TODO: implement an Adapter to properly display data
-    private void displayTasks(){
-
-        mDisplay.setText(TaskEntry._ID + " | " +
-                TaskEntry.COLUMN_TASK_NAME + " | " +
-                TaskEntry.COLUMN_TASK_START_TIME + " | " +
-                TaskEntry.COLUMN_TASK_END_TIME + " | " +
-                TaskEntry.COLUMN_TASK_IS_DONE);
-
-        Cursor cursor = getContentResolver().query(TaskEntry.CONTENT_URI, null, null, null, null);
-
-        if (cursor == null) {return;}
-
-        cursor.moveToFirst();
-        int idIndex = cursor.getColumnIndex(TaskEntry._ID);
-        int nameIndex = cursor.getColumnIndex(TaskEntry.COLUMN_TASK_NAME);
-        int startIndex = cursor.getColumnIndex(TaskEntry.COLUMN_TASK_START_TIME);
-        int endIndex = cursor.getColumnIndex(TaskEntry.COLUMN_TASK_END_TIME);
-        int doneIndex = cursor.getColumnIndex(TaskEntry.COLUMN_TASK_IS_DONE);
-
-        while (cursor.moveToNext()){
-            mDisplay.append( "\n" +
-                    cursor.getInt(idIndex) + " | " +
-                    cursor.getString(nameIndex) + " | " +
-                    cursor.getString(startIndex) + " | " +
-                    cursor.getString(endIndex) + " | " +
-                    cursor.getInt(doneIndex)
-            );
-        }
+        getLoaderManager().initLoader(TASK_LOADER_ID, null, this);
 
     }
 
     private void insertDummyData(){
         ContentValues values = new ContentValues();
         values.put(TaskEntry.COLUMN_TASK_NAME, "Meditate");
-        values.put(TaskEntry.COLUMN_TASK_START_TIME, "2018-08-15 08:30:00.000");
-        values.put(TaskEntry.COLUMN_TASK_END_TIME, "2018-08-15 08:45:00.000");
+        values.put(TaskEntry.COLUMN_TASK_START_TIME, "05:00 AM");
+        values.put(TaskEntry.COLUMN_TASK_END_TIME, "06:00 AM");
         values.put(TaskEntry.COLUMN_TASK_IS_DONE, TaskEntry.DONE_FALSE);
 
         getContentResolver().insert(TaskEntry.CONTENT_URI, values);
@@ -110,4 +85,21 @@ public class ListActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        return new CursorLoader(this, TaskEntry.CONTENT_URI, null, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        taskAdapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        taskAdapter.swapCursor(null);
+    }
+
+    // TODO: add checkbutton onclick functionality- set isdone to true/false
 }
