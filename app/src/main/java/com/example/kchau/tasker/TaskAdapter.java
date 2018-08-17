@@ -10,7 +10,6 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 
 import com.example.kchau.tasker.data.TaskContract.TaskEntry;
-import com.example.kchau.tasker.data.TaskContract;
 
 public class TaskAdapter extends CursorAdapter {
 

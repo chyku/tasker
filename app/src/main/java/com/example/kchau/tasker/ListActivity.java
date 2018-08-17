@@ -3,6 +3,7 @@ package com.example.kchau.tasker;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -13,10 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.kchau.tasker.data.TaskContract.TaskEntry;
+
+import java.util.List;
 
 public class ListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
@@ -44,11 +48,21 @@ public class ListActivity extends AppCompatActivity implements LoaderManager.Loa
         mList = (ListView) findViewById(R.id.listview_task);
         taskAdapter = new TaskAdapter(this, null);
         mList.setAdapter(taskAdapter);
+        mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                // Go to editview
+                Intent toEditView = new Intent(ListActivity.this, EditActivity.class);
+                toEditView.putExtra("position", position);
+                startActivity(toEditView);
+            }
+        });
 
         getLoaderManager().initLoader(TASK_LOADER_ID, null, this);
 
     }
 
+    // Inserts sample data
     private void insertDummyData(){
         ContentValues values = new ContentValues();
         values.put(TaskEntry.COLUMN_TASK_NAME, "Meditate");
@@ -86,6 +100,7 @@ public class ListActivity extends AppCompatActivity implements LoaderManager.Loa
         return super.onOptionsItemSelected(item);
     }
 
+    // Load everything in the database
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(this, TaskEntry.CONTENT_URI, null, null, null, null);

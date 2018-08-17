@@ -62,7 +62,6 @@ public class TaskProvider extends ContentProvider {
 
         }
 
-        // TODO: get reloading to work (after the task is added)
         cursor.setNotificationUri(getContext().getContentResolver(), uri);
 
         return cursor;
@@ -122,8 +121,38 @@ public class TaskProvider extends ContentProvider {
     }
 
     @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+    public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String selection, @Nullable String[] selectionArgs) {
+
+        int rowsUpdated;
+        int uriCode = sUriMatcher.match(uri);
+
+        switch (uriCode) {
+            case TASKS:
+                return updateTask(uri, contentValues, selection, selectionArgs);
+
+            case TASK_ID:
+                selection = TaskEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return updateTask(uri, contentValues, selection, selectionArgs);
+
+            default:
+                throw new IllegalArgumentException("Uri not available");
+        }
+    }
+
+    private int updateTask(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String selection, @Nullable String[] selectionArgs){
+        // TODO: sanity checks here
+
+        SQLiteDatabase database = mTaskDbHelper.getWritableDatabase();
+
+        int rowsUpdated = database.update(TaskEntry.TABLE_NAME, contentValues, selection, selectionArgs);
+
+        if (rowsUpdated != 0){
+            // Notify of change of this particular URI- I still don't fully understand this
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return rowsUpdated;
     }
 }
 
