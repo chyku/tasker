@@ -36,12 +36,14 @@ public class ListActivity extends AppCompatActivity implements LoaderManager.Loa
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton addButton = (FloatingActionButton) findViewById(R.id.fab);
+        addButton.setImageResource(R.drawable.ic_baseline_done_24px);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent toEditView = new Intent(ListActivity.this, EditActivity.class);
+                startActivity(toEditView);
             }
         });
 
@@ -51,9 +53,8 @@ public class ListActivity extends AppCompatActivity implements LoaderManager.Loa
         mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                // Go to editview
                 Intent toEditView = new Intent(ListActivity.this, EditActivity.class);
-                toEditView.putExtra("position", position);
+                toEditView.putExtra("position", position + 1);
                 startActivity(toEditView);
             }
         });
@@ -97,6 +98,11 @@ public class ListActivity extends AppCompatActivity implements LoaderManager.Loa
             return true;
         }
 
+        if (id == R.id.action_delete_all){
+            getContentResolver().delete(TaskEntry.CONTENT_URI, null, null);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -117,4 +123,10 @@ public class ListActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     // TODO: add checkbutton onclick functionality- set isdone to true/false
+
+    // TODO: add EmptyActivity
+
+    // TODO: add recycleview? for adapter
+
+    // TODO: change times input to actual time input
 }

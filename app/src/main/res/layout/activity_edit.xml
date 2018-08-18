@@ -11,31 +11,63 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/et_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
-            android:width="150sp"/>
-
-        <EditText
-            android:id="@+id/et_start_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
-            android:width="100sp"/>
-
-        <EditText
-            android:id="@+id/et_end_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
-            android:width="100sp"/>
+        android:orientation="vertical"
+        android:paddingBottom="15dp">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="15dp">
+            <TextView
+                android:text="@string/edit_name_caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:width="150sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="15dp">
+            <TextView
+                android:text="@string/edit_start_time_caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <EditText
+                android:id="@+id/et_start_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:width="150sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="15dp">
+            <TextView
+                android:text="@string/edit_end_time_caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+            <EditText
+                android:id="@+id/et_end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:width="150sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
@@ -43,7 +75,8 @@
                 android:text="@string/edit_checkbox_caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingRight="5sp"/>
+                android:paddingRight="5sp"
+                android:layout_weight="1"/>
 
             <CheckBox
                 android:id="@+id/edit_checkbox"
@@ -61,6 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin" />
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_menu_add"/>
 
 </android.support.design.widget.CoordinatorLayout>

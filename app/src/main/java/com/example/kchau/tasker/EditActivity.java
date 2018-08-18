@@ -18,7 +18,7 @@ import java.security.Provider;
 
 public class EditActivity extends AppCompatActivity {
 
-    private Intent intent;
+    private int recentPosition;
     private EditText mNameEdit;
     private EditText mStartTimeEdit;
     private EditText mEndTimeEdit;
@@ -32,10 +32,13 @@ public class EditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit);
 
         FloatingActionButton saveButton = (FloatingActionButton) findViewById(R.id.save_actionbutton);
+        saveButton.setImageResource(R.drawable.ic_baseline_done_24px);
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (intent == null) {} // put in another function?
+                saveTask();
+                finish();
             }
         });
 
@@ -45,11 +48,11 @@ public class EditActivity extends AppCompatActivity {
         mEndTimeEdit = (EditText) findViewById(R.id.et_end_time);
         mIsDoneCheckBox = (CheckBox) findViewById(R.id.edit_checkbox);
 
-        intent = getIntent();
+        Intent intent = getIntent();
+        recentPosition = intent.getIntExtra("position", -1);
 
-        if (intent != null){
-            int position = intent.getIntExtra("position", 0);
-            Uri uri = ContentUris.withAppendedId(TaskEntry.CONTENT_URI, position);
+        if (recentPosition != -1){
+            Uri uri = ContentUris.withAppendedId(TaskEntry.CONTENT_URI, recentPosition);
             Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 
             cursor.moveToFirst();
@@ -58,12 +61,15 @@ public class EditActivity extends AppCompatActivity {
             String endTime = cursor.getString(cursor.getColumnIndex(TaskEntry.COLUMN_TASK_END_TIME));
             boolean isDone = (cursor.getInt(cursor.getColumnIndexOrThrow(TaskEntry.COLUMN_TASK_IS_DONE)) == TaskEntry.DONE_TRUE);
 
-        }
+            mNameEdit.setText(name);
+            mStartTimeEdit.setText(startTime);
+            mEndTimeEdit.setText(endTime);
+            mIsDoneCheckBox.setChecked(isDone);
 
-        // Populate the editTexts, checkbox
+        }
     }
 
-    private int saveTask(Uri uri){
+    private int saveTask(){
         ContentValues values = new ContentValues();
         values.put(TaskEntry.COLUMN_TASK_NAME, String.valueOf(mNameEdit.getText()));
         values.put(TaskEntry.COLUMN_TASK_START_TIME, String.valueOf(mStartTimeEdit.getText()));
@@ -75,9 +81,14 @@ public class EditActivity extends AppCompatActivity {
             values.put(TaskEntry.COLUMN_TASK_IS_DONE, TaskEntry.DONE_FALSE);
         }
 
+        if (recentPosition == -1){
+            getContentResolver().insert(TaskEntry.CONTENT_URI, values);
+            return 1;
+        }
+
+        Uri uri = ContentUris.withAppendedId(TaskEntry.CONTENT_URI, recentPosition);
         return getContentResolver().update(uri, values, null, null);
     }
-}
 
-// TODO: 8/16 was implement savetask on the editactivity
-// Questioning if there should be different insert/update function based off intent (edit vs add)
+    // TODO: add delete button when updating
+}

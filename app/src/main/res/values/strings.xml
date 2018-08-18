@@ -2,5 +2,9 @@
     <string name="app_name">Tasker</string>
     <string name="action_settings">Settings</string>
     <string name="action_insert_dummy">Insert dummy task</string>
-    <string name="edit_checkbox_caption">Is done? </string>
+    <string name="action_delete_all">Delete all</string>
+    <string name="edit_checkbox_caption">Is done?</string>
+    <string name="edit_name_caption">Task name</string>
+    <string name="edit_start_time_caption">Start time</string>
+    <string name="edit_end_time_caption">End time</string>
 </resources>

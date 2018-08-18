@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0"
         android:paddingBottom="15dp"
-        android:paddingTop="15dp" />
+        android:paddingTop="15dp"
+        android:focusable="false"/>
 
 </LinearLayout>
