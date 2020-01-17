@@ -91,4 +91,7 @@ public class EditActivity extends AppCompatActivity {
     }
 
     // TODO: add delete button when updating
+
+    // TODO: after deleting all and inserting new, app stops on tapping new
+    // feels like an index problem tbh
 }
